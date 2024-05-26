@@ -25,9 +25,15 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONObject;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -138,16 +144,38 @@ public class AddReservation extends AppCompatActivity {
                             });
 
                             try {
-                                // Pause execution for 3 seconds (3000 milliseconds)
-                                Thread.sleep(3000);
+                                URL url = new URL("https://22b0-196-92-7-82.ngrok-free.app/predict"); // Remplacez par l'URL publique de Ngrok
+                                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                                conn.setRequestMethod("POST");
+                                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                                conn.setRequestProperty("Accept", "application/json");
+                                conn.setDoOutput(true);
+                                String dataInput = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":00";
+                                String jsonInputString = "{\"date\": \"" + dataInput + "\"}";
+                                Log.d("dt", "the data is : "+ jsonInputString);
+                                try(OutputStream os = conn.getOutputStream()) {
+                                    byte[] input = jsonInputString.getBytes("utf-8");
+                                    os.write(input, 0, input.length);
+                                }
 
-                                // Alternative using TimeUnit for better readability
-                                // TimeUnit.SECONDS.sleep(3);
+                                try (Scanner scanner = new Scanner(conn.getInputStream(), "UTF-8")) {
+                                    String response = scanner.useDelimiter("\\A").next();
+                                    JSONObject jsonResponse = new JSONObject(response);
+                                    double predictedOccupancy = jsonResponse.getDouble("predicted_occupancy")*100;
+                                    if (predictedOccupancy > 70) {
+                                        price.setText("5 DH");
+                                    } else if (predictedOccupancy > 80) {
+                                        price.setText("7 DH");
+                                    } else if (predictedOccupancy > 90) {
+                                        price.setText("10 DH");
+                                    } else {
+                                        price.setText("3 DH");
+                                    }
+                                }
 
-                            } catch (InterruptedException e) {
-                                // Handle the exception if the sleep is interrupted
-                                System.out.println("Sleep was interrupted");
-                                Thread.currentThread().interrupt(); // Preserve interrupt status
+                                conn.disconnect();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                             runOnUiThread(new Runnable() {
@@ -177,16 +205,39 @@ public class AddReservation extends AppCompatActivity {
                             });
 
                             try {
-                                // Pause execution for 3 seconds (3000 milliseconds)
-                                Thread.sleep(3000);
+                                URL url = new URL("https://22b0-196-92-7-82.ngrok-free.app/predict"); // Remplacez par l'URL publique de Ngrok
+                                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                                conn.setRequestMethod("POST");
+                                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                                conn.setRequestProperty("Accept", "application/json");
+                                conn.setDoOutput(true);
 
-                                // Alternative using TimeUnit for better readability
-                                // TimeUnit.SECONDS.sleep(3);
+                                String jsonInputString = "{\"date\": \"2024-01-28 13:30:00\"}";
 
-                            } catch (InterruptedException e) {
-                                // Handle the exception if the sleep is interrupted
-                                System.out.println("Sleep was interrupted");
-                                Thread.currentThread().interrupt(); // Preserve interrupt status
+                                try(OutputStream os = conn.getOutputStream()) {
+                                    byte[] input = jsonInputString.getBytes("utf-8");
+                                    os.write(input, 0, input.length);
+                                }
+
+                                try (Scanner scanner = new Scanner(conn.getInputStream(), "UTF-8")) {
+                                    String response = scanner.useDelimiter("\\A").next();
+                                    JSONObject jsonResponse = new JSONObject(response);
+                                    double predictedOccupancy = jsonResponse.getDouble("predicted_occupancy")*100;
+                                    Log.d("res", "response is: " + predictedOccupancy);
+                                    if (predictedOccupancy > 70) {
+                                        price.setText("5 DH");
+                                    } else if (predictedOccupancy > 80) {
+                                        price.setText("7 DH");
+                                    } else if (predictedOccupancy > 90) {
+                                        price.setText("10 DH");
+                                    } else {
+                                        price.setText("3 DH");
+                                    }
+                                }
+
+                                conn.disconnect();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                             runOnUiThread(new Runnable() {
@@ -216,16 +267,39 @@ public class AddReservation extends AppCompatActivity {
                             });
 
                             try {
-                                // Pause execution for 3 seconds (3000 milliseconds)
-                                Thread.sleep(3000);
+                                URL url = new URL("https://22b0-196-92-7-82.ngrok-free.app/predict"); // Remplacez par l'URL publique de Ngrok
+                                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                                conn.setRequestMethod("POST");
+                                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                                conn.setRequestProperty("Accept", "application/json");
+                                conn.setDoOutput(true);
 
-                                // Alternative using TimeUnit for better readability
-                                // TimeUnit.SECONDS.sleep(3);
+                                String jsonInputString = "{\"date\": \"2024-01-28 13:30:00\"}";
 
-                            } catch (InterruptedException e) {
-                                // Handle the exception if the sleep is interrupted
-                                System.out.println("Sleep was interrupted");
-                                Thread.currentThread().interrupt(); // Preserve interrupt status
+                                try(OutputStream os = conn.getOutputStream()) {
+                                    byte[] input = jsonInputString.getBytes("utf-8");
+                                    os.write(input, 0, input.length);
+                                }
+
+                                try (Scanner scanner = new Scanner(conn.getInputStream(), "UTF-8")) {
+                                    String response = scanner.useDelimiter("\\A").next();
+                                    JSONObject jsonResponse = new JSONObject(response);
+                                    double predictedOccupancy = jsonResponse.getDouble("predicted_occupancy")*100;
+                                    Log.d("res", "response is: " + predictedOccupancy);
+                                    if (predictedOccupancy > 70) {
+                                        price.setText("5 DH");
+                                    } else if (predictedOccupancy > 80) {
+                                        price.setText("7 DH");
+                                    } else if (predictedOccupancy > 90) {
+                                        price.setText("10 DH");
+                                    } else {
+                                        price.setText("3 DH");
+                                    }
+                                }
+
+                                conn.disconnect();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                             runOnUiThread(new Runnable() {
@@ -255,18 +329,40 @@ public class AddReservation extends AppCompatActivity {
                             });
 
                             try {
-                                // Pause execution for 3 seconds (3000 milliseconds)
-                                Thread.sleep(3000);
+                                URL url = new URL("https://22b0-196-92-7-82.ngrok-free.app/predict"); // Remplacez par l'URL publique de Ngrok
+                                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                                conn.setRequestMethod("POST");
+                                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                                conn.setRequestProperty("Accept", "application/json");
+                                conn.setDoOutput(true);
 
-                                // Alternative using TimeUnit for better readability
-                                // TimeUnit.SECONDS.sleep(3);
+                                String jsonInputString = "{\"date\": \"2024-01-28 13:30:00\"}";
 
-                            } catch (InterruptedException e) {
-                                // Handle the exception if the sleep is interrupted
-                                System.out.println("Sleep was interrupted");
-                                Thread.currentThread().interrupt(); // Preserve interrupt status
+                                try(OutputStream os = conn.getOutputStream()) {
+                                    byte[] input = jsonInputString.getBytes("utf-8");
+                                    os.write(input, 0, input.length);
+                                }
+
+                                try (Scanner scanner = new Scanner(conn.getInputStream(), "UTF-8")) {
+                                    String response = scanner.useDelimiter("\\A").next();
+                                    JSONObject jsonResponse = new JSONObject(response);
+                                    double predictedOccupancy = jsonResponse.getDouble("predicted_occupancy")*100;
+                                    Log.d("res", "response is: " + predictedOccupancy);
+                                    if (predictedOccupancy > 70) {
+                                        price.setText("5 DH");
+                                    } else if (predictedOccupancy > 80) {
+                                        price.setText("7 DH");
+                                    } else if (predictedOccupancy > 90) {
+                                        price.setText("10 DH");
+                                    } else {
+                                        price.setText("3 DH");
+                                    }
+                                }
+
+                                conn.disconnect();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -276,6 +372,8 @@ public class AddReservation extends AppCompatActivity {
                             });
 
                         }
+
+
                     });
                 }
             }
