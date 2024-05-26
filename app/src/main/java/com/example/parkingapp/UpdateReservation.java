@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,12 +29,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class AddReservation extends AppCompatActivity {
+import model.Reservation;
 
+public class UpdateReservation extends AppCompatActivity {
     Button dayPicker;
     ProgressBar parkingProgressBar;
     ProgressBar priceProgressBar;
@@ -60,15 +62,14 @@ public class AddReservation extends AppCompatActivity {
     Button pay;
     ExecutorService parkingService;
     ExecutorService priceService;
-
-
     @SuppressLint("MissingInflatedId")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_reservation);
+        setContentView(R.layout.update_reservation);
         db = FirebaseFirestore.getInstance();
+        Intent intent = getIntent();
+        Reservation reservation = (Reservation) intent.getSerializableExtra("reservation");
         dayPicker = (Button) findViewById(R.id.dayPicker);
         datePicker = (Button) findViewById(R.id.timePicker);
         endDatePicker = (Button) findViewById(R.id.endTimePicker);
@@ -89,6 +90,9 @@ public class AddReservation extends AppCompatActivity {
         parkingProgressBar.setVisibility(View.GONE);
         parkingService = Executors.newSingleThreadExecutor();
         priceService = Executors.newSingleThreadExecutor();
+        assert reservation != null;
+        String dd = reservation.getDay() +"/" + reservation.getMonth() + "/" + reservation.getYear() + " "  + reservation.getStartHour() + ":" + reservation.getStartMinute() + " - " + reservation.getEndHour() + ":" + reservation.getEndMinute();
+        dateAndDay.setText(dd);
         dayPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -302,20 +306,27 @@ public class AddReservation extends AppCompatActivity {
                 reserv.put("client", "rachidisadek@gmail.com");
                 reserv.put("payed", true);
                 reserv.put("parking", parkingChosen);
-                db.collection("reservation").document(id).set(reserv)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()){
-                                    Toast.makeText(AddReservation.this, "la reservation est ajouté", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(AddReservation.this, MainActivity.class);
-                                    startActivity(intent);
+                db.collection("reservation").document(reservation.getId()).delete()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        db.collection("reservation").document(id).set(reserv)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()){
+                                                            Toast.makeText(UpdateReservation.this, "la reservation est modifiée", Toast.LENGTH_LONG).show();
+                                                            Intent intent = new Intent(UpdateReservation.this, MainActivity.class);
+                                                            startActivity(intent);
 
-                                } else {
-                                    Log.d("error", "reserv not added");
-                                }
-                            }
-                        });
+                                                        } else {
+                                                            Log.d("error", "reserv not added");
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                });
+
             }
         });
 
@@ -442,10 +453,5 @@ public class AddReservation extends AppCompatActivity {
         }
 
         price.setText("10 DH");
-    }
-
-
-    private void AssignDates() {
-
     }
 }
