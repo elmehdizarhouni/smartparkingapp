@@ -1,5 +1,7 @@
 package com.example.parkingapp;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -83,6 +85,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             Toast.makeText(context, "deleted successfuly", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(context, Reservations.class);
+                                            context.startActivity(intent);
                                         }
                                     });
                             return true;

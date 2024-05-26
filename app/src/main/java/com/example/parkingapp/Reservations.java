@@ -2,40 +2,27 @@ package com.example.parkingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
-import android.view.View;
-
-import androidx.core.view.WindowCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.parkingapp.databinding.ActivityMainBinding;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.LinkedList;
 
 import model.Reservation;
 
-public class MainActivity extends AppCompatActivity {
+public class Reservations extends AppCompatActivity {
 
     private FloatingActionButton addReservation;
     RecyclerView myrecycler;
@@ -52,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         reservations = new LinkedList<>();
         myrecycler = (RecyclerView) findViewById(R.id.recycler);
-        ReservationAdapter Myadapter = new ReservationAdapter(reservations, MainActivity.this);
+        ReservationAdapter Myadapter = new ReservationAdapter(reservations, Reservations.this);
         addReservation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddReservation.class);
+                Intent intent = new Intent(Reservations.this, AddReservation.class);
                 startActivity(intent);
             }
         });
@@ -80,18 +67,16 @@ public class MainActivity extends AppCompatActivity {
                             }
                             myrecycler.setHasFixedSize(true);
                             // use a linear layout manager
-                            LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+                            LinearLayoutManager layoutManager = new LinearLayoutManager(Reservations.this);
                             myrecycler.setLayoutManager(layoutManager);
                             // specify an adapter (see also next example)
-                            ReservationAdapter myAdapter = new ReservationAdapter(reservations, MainActivity.this);
+                            ReservationAdapter myAdapter = new ReservationAdapter(reservations, Reservations.this);
                             myrecycler.setAdapter(myAdapter);
 
                         } else {
-                            Toast.makeText(MainActivity.this, "Erreur lors de la récupération des réservations", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Reservations.this, "Erreur lors de la récupération des réservations", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
-
-
 }

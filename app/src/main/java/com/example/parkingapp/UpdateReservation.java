@@ -316,7 +316,7 @@ public class UpdateReservation extends AppCompatActivity {
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()){
                                                             Toast.makeText(UpdateReservation.this, "la reservation est modifiée", Toast.LENGTH_LONG).show();
-                                                            Intent intent = new Intent(UpdateReservation.this, MainActivity.class);
+                                                            Intent intent = new Intent(UpdateReservation.this, Reservations.class);
                                                             startActivity(intent);
 
                                                         } else {
