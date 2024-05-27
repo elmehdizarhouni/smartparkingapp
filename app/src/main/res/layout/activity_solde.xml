@@ -41,9 +41,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
+            android:background="@drawable/btn_bg"
             android:text="Recharger votre solde"
             android:backgroundTint="@color/orange"
             android:textColor="@android:color/white" />
+
+        <ImageView
+            android:id="@+id/imageab"
+            android:layout_width="500dp"
+            android:layout_height="302dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="250dp"
+            android:src="@drawable/abstract1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
 
 
 
